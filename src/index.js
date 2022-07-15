@@ -5,6 +5,7 @@ const PORT = 3000;
 
 const server = express();
 
+server.use(express.json());
 server.use('/product', productRouter);
 server.use('/cart', cartRouter);
 
