@@ -1,23 +1,23 @@
 import { Router } from 'express';
+import { atualizarProduto, buscarProdutos, removerProduto, salvarNovoPoduto } from '../models/product.js';
 
 const productRouter = new Router();
-
-let proxId = 6;
-const produtos = [
-    { id: 1, name: 'vassoura' },
-    { id: 2, name: 'pá' },
-    { id: 3, name: 'balde' },
-    { id: 4, name: 'lixo' },
-    { id: 5, name: 'rodo' },
-];
 
 // CRUD - Create, Read, Update, Delete
 
 // Read
-productRouter.get('/', (req, res) => {
+productRouter.get('/:id?', (req, res) => {
+    if (req.params.id) {
+        res
+            .status(200)
+            .json(buscarProdutos(req.params.id));
+
+        return;
+    }
+    
     res
         .status(200)
-        .json(produtos);
+        .json(buscarProdutos());
 });
 
 // Create
