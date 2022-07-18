@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { atualizarProduto, buscarProdutos, removerProduto, salvarNovoPoduto } from '../models/product.js';
+import ProductDTO from '../views/productDTO';
+import { atualizarProduto, buscarUmProduto, buscarTodosProdutos, removerProduto, salvarNovoPoduto } from '../models/product.js';
 
 const productRouter = new Router();
 
@@ -8,16 +9,22 @@ const productRouter = new Router();
 // Read
 productRouter.get('/:id?', (req, res) => {
     if (req.params.id) {
+        const produto = buscarUmProduto(req.params.id);
+        const dto = new ProductDTO(produto);
+
         res
             .status(200)
-            .json(buscarProdutos(req.params.id));
+            .json(dto.toJson());
 
         return;
     }
     
+    const listaDeDTOs = buscarTodosProdutos()
+        .map((produto) => (new ProductDTO(produto)).toJson());
+
     res
         .status(200)
-        .json(buscarProdutos());
+        .json(listaDeDTOs);
 });
 
 // Create
