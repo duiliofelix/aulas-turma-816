@@ -1,6 +1,12 @@
 import { Router } from 'express';
-import ProductDTO from '../views/productDTO';
-import { atualizarProduto, buscarUmProduto, buscarTodosProdutos, removerProduto, salvarNovoPoduto } from '../models/product.js';
+import ProductDTO from '../views/productDTO.js';
+import {
+    atualizarProduto,
+    buscarUmProduto,
+    buscarTodosProdutos,
+    removerProduto,
+    salvarNovoPoduto,
+} from '../models/product.js';
 
 const productRouter = new Router();
 
@@ -8,8 +14,15 @@ const productRouter = new Router();
 
 // Read
 productRouter.get('/:id?', (req, res) => {
-    if (req.params.id) {
-        const produto = buscarUmProduto(req.params.id);
+    const { id } = req.params;
+
+    if (id) {
+        const produto = buscarUmProduto(id);
+        if (!produto) {
+            res.status(200).send();
+            return;
+        }
+
         const dto = new ProductDTO(produto);
 
         res
@@ -20,7 +33,10 @@ productRouter.get('/:id?', (req, res) => {
     }
     
     const listaDeDTOs = buscarTodosProdutos()
-        .map((produto) => (new ProductDTO(produto)).toJson());
+        .map((produto) => {
+            const dto = new ProductDTO(produto);
+            return dto.toJson();
+        });
 
     res
         .status(200)
@@ -29,14 +45,14 @@ productRouter.get('/:id?', (req, res) => {
 
 // Create
 productRouter.post('/', (req, res) => {
-    const name = req.body.name;
+    const { name, price } = req.body;
 
-    const newProduct = {
-        id: proxId,
-        name,
-    };
-    produtos.push(newProduct);
-    proxId += 1;
+    if (!name || !price) {
+        res.send(400).send('Falta parâmetros');
+        return;
+    }
+
+    const newProduct = salvarNovoPoduto(name, price);
 
     res
         .status(201)
@@ -45,21 +61,21 @@ productRouter.post('/', (req, res) => {
 
 // Update
 productRouter.put('/:id', (req, res) => {
-    const id = req.params.id;
-    const name = req.body.name;
+    const { id } = req.params;
+    const { name, price } = req.body;
 
-    produtos[id - 1].name = name;
+    const produto = atualizarProduto(id, name, price);
     
     res
         .status(200)
-        .json(produtos[id - 1]);
+        .json(produto);
 });
 
 // Delete
 productRouter.delete('/:id', (req, res) => {
-    const id = req.params.id;
+    const { id } = req.params;
 
-    delete produtos[id - 1];
+    removerProduto(id);
 
     res
         .status(200)
