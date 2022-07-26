@@ -13,11 +13,11 @@ const productRouter = new Router();
 // CRUD - Create, Read, Update, Delete
 
 // Read
-productRouter.get('/:id?', (req, res) => {
+productRouter.get('/:id?', async (req, res) => {
     const { id } = req.params;
 
     if (id) {
-        const produto = buscarUmProduto(id);
+        const produto = await buscarUmProduto(id);
         if (!produto) {
             res.status(200).send();
             return;
@@ -32,7 +32,7 @@ productRouter.get('/:id?', (req, res) => {
         return;
     }
     
-    const listaDeDTOs = buscarTodosProdutos()
+    const listaDeDTOs = await buscarTodosProdutos()
         .map((produto) => {
             const dto = new ProductDTO(produto);
             return dto.toJson();
@@ -44,7 +44,7 @@ productRouter.get('/:id?', (req, res) => {
 });
 
 // Create
-productRouter.post('/', (req, res) => {
+productRouter.post('/', async (req, res) => {
     const { name, price } = req.body;
 
     if (!name || !price) {
@@ -60,11 +60,11 @@ productRouter.post('/', (req, res) => {
 });
 
 // Update
-productRouter.put('/:id', (req, res) => {
+productRouter.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { name, price } = req.body;
 
-    const produto = atualizarProduto(id, name, price);
+    const produto = await atualizarProduto(id, name, price);
     
     res
         .status(200)
@@ -72,10 +72,10 @@ productRouter.put('/:id', (req, res) => {
 });
 
 // Delete
-productRouter.delete('/:id', (req, res) => {
+productRouter.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
-    removerProduto(id);
+    await removerProduto(id);
 
     res
         .status(200)
