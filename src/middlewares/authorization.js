@@ -1,16 +1,16 @@
-import { getValidToken } from '../models/token.js';
+import * as UserToken from "../service/token.js";
 
 const authenticationMiddleware = async (req, res, next) => {
-    const tokenId = req.headers['Authorization'];
+  const tokenId = req.headers["Authorization"];
 
-    try {
-        await getValidToken(tokenId);
-    } catch (e) {
-        res.status(403).send('Unauthorized');
-        return;
-    }
+  try {
+    await UserToken.getValidToken(tokenId);
+  } catch (e) {
+    res.status(403).send("Unauthorized");
+    return;
+  }
 
-    next();
+  next();
 };
 
 export default authenticationMiddleware;

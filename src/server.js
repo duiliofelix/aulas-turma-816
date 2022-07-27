@@ -1,19 +1,20 @@
-import express from 'express';
-import { cartRouter, productRouter, userRouter } from './routes/index.js';
-import authorizationMiddleware from './middlewares/authorization.js';
+import express from "express";
+import "dotenv/config";
 
-const PORT = 3000;
+import { cartRouter, productRouter, userRouter } from "./routes/index.js";
+import authorizationMiddleware from "./middlewares/authorization.js";
+
+const port = process.env.PORT;
 
 const server = express();
 
 server.use(express.json());
 
-server.use('/', userRouter);
+server.use("/", userRouter);
 
 server.use(authorizationMiddleware);
-server.use('/product', productRouter);
-server.use('/cart', cartRouter);
-
-server.listen(PORT, () => {
-    console.log(`oi, estou funcionando na port ${PORT}`);
+server.use("/product", productRouter);
+server.use("/cart", cartRouter);
+server.listen(port, () => {
+  console.log(`Server conectado na porta ${port}`);
 });
