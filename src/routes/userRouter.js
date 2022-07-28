@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { createToken } from '../models/token';
-import { createNewUser, getUserByUsernameOrEmail } from '../models/user';
-import UserDTO from '../views/userDTO';
-import TokenDTO from '../views/tokenDTO';
+import { createToken } from '../models/token.js';
+import { createNewUser, getUserByUsernameOrEmail } from '../models/user.js';
+import UserDTO from '../views/userDTO.js';
+import TokenDTO from '../views/tokenDTO.js';
 
 const userRouter = new Router();
 

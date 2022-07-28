@@ -3,7 +3,7 @@ import moment from 'moment';
 
 const TokenModel = mongoose.model('Token', {
     createdAt: Date,
-    active: boolean,
+    active: Boolean,
     userId: String,
 });
 
